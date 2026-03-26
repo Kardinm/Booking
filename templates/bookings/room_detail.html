@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ room.name }}</title>
+</head>
+<body>
+ 
+<a href="{% url 'room_list' %}">Назад до списку</a>
+ 
+<h1>{{ room.name }}</h1>
+<p>Тип: {{ room.get_room_type_display }}</p>
+<p>Вмістимість: {{ room.capacity }} осіб</p>
+<p>Площа: {{ room.room_area }} м. квад.</p>
+<p>Ціна за годину: {{ room.price_per_hour }} грн</p>
+<p>Ціна за день: {{ room.price_per_day }} грн</p>
+ 
+{% if room.description %}
+    <p>Опис: {{ room.description }}</p>
+{% endif %}
+ 
+{% if features %}
+    <h2>Особливості</h2>
+    <ul>
+        {% if features.has_wifi %}<li>Wi-Fi</li>{% endif %}
+        {% if features.has_air_conditioning %}<li>Кондиціонер</li>{% endif %}
+        {% if features.has_heating %}<li>Опалення</li>{% endif %}
+        {% if features.has_tv %}<li>Телевізор</li>{% endif %}
+        {% if features.has_kitchen %}<li>Кухня</li>{% endif %}
+        {% if features.has_fridge %}<li>Холодильник</li>{% endif %}
+        {% if features.has_shower %}<li>Душ</li>{% endif %}
+    </ul>
+{% endif %}
+ 
+<h2>Зайнятий час</h2>
+{% if upcoming_bookings %}
+    <ul>
+        {% for b in upcoming_bookings %}
+            <li>{{ b.start_time }} — {{ b.end_time }} ({{ b.get_status_display }})</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Немає активних бронювань.</p>
+{% endif %}
+ 
+<a href="{% url 'booking_create_for_room' room.pk %}">Забронювати цю кімнату</a>
+ 
+</body>
+</html>

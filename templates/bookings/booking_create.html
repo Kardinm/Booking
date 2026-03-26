@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Нове бронювання</title>
+</head>
+<body>
+ 
+<a href="{% url 'room_list' %}">Назад до списку</a>
+ 
+<h1>Нове бронювання</h1>
+ 
+{% if messages %}
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+{% endif %}
+ 
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Підтвердити бронювання</button>
+</form>
+ 
+</body>
+</html>

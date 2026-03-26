@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Мої бронювання</title>
+</head>
+<body>
+ 
+<h1>Мої бронювання</h1>
+ 
+<a href="{% url 'room_list' %}">До списку кімнат</a>
+ 
+{% if messages %}
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+{% endif %}
+ 
+{% if bookings %}
+    {% for booking in bookings %}
+        <div>
+            <h3>{{ booking.room.name }}</h3>
+            <p>Початок: {{ booking.start_time }}</p>
+            <p>Кінець: {{ booking.end_time }}</p>
+            <p>Статус: {{ booking.get_status_display }}</p>
+            <p>Створено: {{ booking.created_at }}</p>
+ 
+            {% if booking.status == 'pending' or booking.status == 'confirmed' %}
+                <form method="post" action="{% url 'booking_cancel' booking.pk %}">
+                    {% csrf_token %}
+                    <button type="submit">Скасувати</button>
+                </form>
+            {% endif %}
+        </div>
+        <hr>
+    {% endfor %}
+{% else %}
+    <p>У вас ще немає бронювань.</p>
+    <a href="{% url 'room_list' %}">Забронювати кімнату</a>
+{% endif %}
+ 
+</body>
+</html>

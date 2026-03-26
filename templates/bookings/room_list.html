@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Список кімнат</title>
+</head>
+<body>
+ 
+<h1>Доступні кімнати</h1>
+ 
+<form method="get">
+    <label for="room_type">Фільтр за типом:</label>
+    <select name="room_type" id="room_type" onchange="this.form.submit()">
+        <option value="">Типи</option>
+        {% for value, label in room_types %}
+            <option value="{{ value }}">
+                {{ label }}
+            </option>
+        {% endfor %}
+    </select>
+</form>
+ 
+<hr>
+ 
+{% if rooms %}
+    {% for room in rooms %}
+        <div>
+            <h2>{{ room.name }}</h2>
+            <p>Тип: {{ room.get_room_type_display }}</p>
+            <p>Вмістимість: {{ room.capacity }} осіб</p>
+            <p>Ціна за годину: {{ room.price_per_hour }} грн</p>
+            <p>Ціна за день: {{ room.price_per_day }} грн</p>
+            <a href="{% url 'room_detail' room.pk %}">Детальніше</a>
+            |
+            <a href="{% url 'booking_create_for_room' room.pk %}">Забронювати</a>
+        </div>
+        <hr>
+    {% endfor %}
+{% else %}
+    <p>Кімнат не знайдено.</p>
+{% endif %}
+ 
+</body>
+</html>

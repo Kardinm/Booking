@@ -1,49 +1,145 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ room.name }}</title>
-</head>
-<body>
- 
-<a href="{% url 'room_list' %}">Назад до списку</a>
- 
-<h1>{{ room.name }}</h1>
-<p>Тип: {{ room.get_room_type_display }}</p>
-<p>Вмістимість: {{ room.capacity }} осіб</p>
-<p>Площа: {{ room.room_area }} м. квад.</p>
-<p>Ціна за годину: {{ room.price_per_hour }} грн</p>
-<p>Ціна за день: {{ room.price_per_day }} грн</p>
- 
-{% if room.description %}
-    <p>Опис: {{ room.description }}</p>
-{% endif %}
- 
-{% if features %}
-    <h2>Особливості</h2>
-    <ul>
-        {% if features.has_wifi %}<li>Wi-Fi</li>{% endif %}
-        {% if features.has_air_conditioning %}<li>Кондиціонер</li>{% endif %}
-        {% if features.has_heating %}<li>Опалення</li>{% endif %}
-        {% if features.has_tv %}<li>Телевізор</li>{% endif %}
-        {% if features.has_kitchen %}<li>Кухня</li>{% endif %}
-        {% if features.has_fridge %}<li>Холодильник</li>{% endif %}
-        {% if features.has_shower %}<li>Душ</li>{% endif %}
-    </ul>
-{% endif %}
- 
-<h2>Зайнятий час</h2>
-{% if upcoming_bookings %}
-    <ul>
-        {% for b in upcoming_bookings %}
-            <li>{{ b.start_time }} — {{ b.end_time }} ({{ b.get_status_display }})</li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>Немає активних бронювань.</p>
-{% endif %}
- 
-<a href="{% url 'booking_create_for_room' room.pk %}">Забронювати цю кімнату</a>
- 
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}{{ room.name }}{% endblock %}
+{% block nav_rooms %}active{% endblock %}
+
+{% block content %}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a href="{% url 'room_list' %}" class="text-decoration-none">Приміщення</a></li>
+        <li class="breadcrumb-item active">{{ room.name }}</li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-start justify-content-between mb-3">
+                    <div>
+                        <h2 class="fw-bold mb-1">{{ room.name }}</h2>
+                        <span class="badge bg-secondary badge-type">{{ room.get_room_type_display }}</span>
+                    </div>
+                    <i class="bi {{ room.get_type_icon }} fs-1 text-muted"></i>
+                </div>
+
+                {% if room.description %}
+                <p class="text-muted mb-4">{{ room.description }}</p>
+                {% endif %}
+
+
+                <div class="row g-3 mb-4">
+                    <div class="col-4 text-center">
+                        <div class="bg-light rounded-3 p-3">
+                            <i class="bi bi-people fs-4 text-primary d-block mb-1"></i>
+                            <div class="fw-bold">{{ room.capacity }}</div>
+                            <small class="text-muted">осіб</small>
+                        </div>
+                    </div>
+                    <div class="col-4 text-center">
+                        <div class="bg-light rounded-3 p-3">
+                            <i class="bi bi-aspect-ratio fs-4 text-primary d-block mb-1"></i>
+                            <div class="fw-bold">{{ room.room_area }}</div>
+                            <small class="text-muted">м²</small>
+                        </div>
+                    </div>
+                    <div class="col-4 text-center">
+                        <div class="bg-light rounded-3 p-3">
+                            <i class="bi bi-clock fs-4 text-primary d-block mb-1"></i>
+                            <div class="fw-bold">{{ room.price_per_hour }} грн</div>
+                            <small class="text-muted">за годину</small>
+                        </div>
+                    </div>
+                </div>
+
+
+                {% if features %}
+                {% with active=features.active_features %}
+                {% if active %}
+                <h6 class="fw-semibold mb-2">Зручності</h6>
+                <div class="d-flex flex-wrap gap-2 mb-2">
+                    {% for label, icon in active %}
+                    <span class="feature-badge">
+                        <i class="bi {{ icon }}"></i> {{ label }}
+                    </span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+                {% endif %}
+            </div>
+        </div>
+
+       
+        {% if upcoming_bookings %}
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
+                <h6 class="fw-semibold mb-3">
+                    <i class="bi bi-calendar3 me-2 text-muted"></i>Заплановані бронювання
+                </h6>
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Початок</th>
+                                <th>Кінець</th>
+                                <th>Статус</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for b in upcoming_bookings %}
+                            <tr>
+                                <td>{{ b.start_time|date:"d.m.Y H:i" }}</td>
+                                <td>{{ b.end_time|date:"d.m.Y H:i" }}</td>
+                                <td>
+                                    <span class="badge bg-{{ b.get_status_badge }}">
+                                        {{ b.get_status_display }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 sticky-top" style="top: 80px;">
+            <div class="price-box p-4 rounded-top-4">
+                <div class="mb-1">
+                    <span class="fs-3 fw-bold">{{ room.price_per_hour }} грн</span>
+                    <span class="opacity-75"> / год</span>
+                </div>
+                <div class="opacity-75 small">{{ room.price_per_day }} грн / повний день</div>
+            </div>
+            <div class="card-body p-4">
+                {% if user.is_authenticated %}
+                <a href="{% url 'booking_create_for_room' room.pk %}"
+                   class="btn btn-primary w-100 py-2 fw-semibold">
+                    <i class="bi bi-calendar-plus me-2"></i>Забронювати
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}?next={% url 'booking_create_for_room' room.pk %}"
+                   class="btn btn-primary w-100 py-2 fw-semibold">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Увійти для бронювання
+                </a>
+                <p class="text-center text-muted small mt-2 mb-0">
+                    Немає акаунту? <a href="{% url 'register' %}">Зареєструватись</a>
+                </p>
+                {% endif %}
+
+                <hr class="my-3">
+                <ul class="list-unstyled small text-muted mb-0">
+                    <li class="mb-1"><i class="bi bi-check2 text-success me-1"></i>Миттєве підтвердження</li>
+                    <li class="mb-1"><i class="bi bi-check2 text-success me-1"></i>Скасування у будь-який час</li>
+                    <li><i class="bi bi-check2 text-success me-1"></i>Без прихованих платежів</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

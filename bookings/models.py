@@ -26,6 +26,8 @@ class Room(models.Model):
         verbose_name='Площа', decimal_places=2, max_digits=7
     )
 
+    address = models.CharField(max_length=300, blank=True, verbose_name='Адреса')
+
     price_per_hour = models.DecimalField(
         verbose_name='Ціна за годину (грн)', decimal_places=2, max_digits=8
     )

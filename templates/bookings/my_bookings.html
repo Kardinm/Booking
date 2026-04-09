@@ -45,6 +45,13 @@
                         <div>
                             <div class="fw-semibold">{{ booking.room.name }}</div>
                             <div class="text-muted small">{{ booking.room.get_room_type_display }}</div>
+
+                            {% if booking.room.address %}
+                            <div class="text-muted small">
+                                <i class="bi bi-geo-alt me-1"></i>{{ booking.room.address }}
+                            </div>
+                            {% endif %}
+                            
                         </div>
                     </div>
                 </div>
@@ -97,11 +104,10 @@
 
 {% else %}
 <div class="text-center py-5">
-    <i class="bi bi-calendar2-x fs-1 text-muted d-block mb-3"></i>
     <h5 class="text-muted">У вас ще немає бронювань</h5>
     <p class="text-muted small mb-3">Знайдіть підходяще приміщення та зробіть перше бронювання</p>
     <a href="{% url 'room_list' %}" class="btn btn-primary px-4">
-        <i class="bi bi-search me-2"></i>Переглянути приміщення
+        Переглянути приміщення
     </a>
 </div>
 {% endif %}

@@ -19,6 +19,14 @@
                     <div>
                         <h2 class="fw-bold mb-1">{{ room.name }}</h2>
                         <span class="badge bg-secondary badge-type">{{ room.get_room_type_display }}</span>
+
+                        {% if room.address %}
+                        <div class="d-flex align-items-center gap-1 text-muted mt-2">
+                            <i class="bi bi-geo-alt-fill text-danger"></i>
+                            <span class="small">{{ room.address }}</span>
+                        </div>
+                        {% endif %}
+                        
                     </div>
                     <i class="bi {{ room.get_type_icon }} fs-1 text-muted"></i>
                 </div>
@@ -111,16 +119,16 @@
         <div class="card border-0 shadow-sm rounded-4 sticky-top" style="top: 80px;">
             <div class="price-box p-4 rounded-top-4">
                 <div class="mb-1">
-                    <span class="fs-3 fw-bold">{{ room.price_per_hour }} грн</span>
-                    <span class="opacity-75"> / год</span>
+                    <span class="fs-3 fw-bold">{{ room.price_per_day }} грн</span>
+                    <span class="opacity-75"> / день</span>
                 </div>
-                <div class="opacity-75 small">{{ room.price_per_day }} грн / повний день</div>
+                <div class="opacity-75 small">{{ room.price_per_hour }} грн / год</div>
             </div>
             <div class="card-body p-4">
                 {% if user.is_authenticated %}
                 <a href="{% url 'booking_create_for_room' room.pk %}"
                    class="btn btn-primary w-100 py-2 fw-semibold">
-                    <i class="bi bi-calendar-plus me-2"></i>Забронювати
+                    Забронювати
                 </a>
                 {% else %}
                 <a href="{% url 'login' %}?next={% url 'booking_create_for_room' room.pk %}"
@@ -133,11 +141,6 @@
                 {% endif %}
 
                 <hr class="my-3">
-                <ul class="list-unstyled small text-muted mb-0">
-                    <li class="mb-1"><i class="bi bi-check2 text-success me-1"></i>Миттєве підтвердження</li>
-                    <li class="mb-1"><i class="bi bi-check2 text-success me-1"></i>Скасування у будь-який час</li>
-                    <li><i class="bi bi-check2 text-success me-1"></i>Без прихованих платежів</li>
-                </ul>
             </div>
         </div>
     </div>

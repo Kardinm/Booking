@@ -6,7 +6,6 @@
     <div class="col-lg-7">
         <div class="mb-4">
             <h3 class="fw-bold">Нове бронювання</h3>
-            <p class="text-muted mb-0">Заповніть форму, щоб зарезервувати приміщення</p>
         </div>
 
         {% if preselected_room %}
@@ -14,7 +13,14 @@
             <i class="bi bi-building fs-5"></i>
             <div>
                 <strong>{{ preselected_room.name }}</strong>
-                <span class="text-muted ms-1">— {{ preselected_room.get_room_type_display }}</span>
+                <span class="text-muted ms-1"> ({{ preselected_room.get_room_type_display }})</span>
+
+                {% if preselected_room.address %}
+                <div class="small mt-1">
+                    <i class="bi bi-geo-alt me-1"></i>{{ preselected_room.address }}
+                </div>
+                {% endif %}
+                
             </div>
         </div>
         {% endif %}
@@ -57,17 +63,6 @@
                         </div>
                     </div>
 
-                   
-                    <div class="mb-4">
-                        <label for="{{ form.notes.id_for_label }}" class="form-label fw-semibold">
-                            <i class="bi bi-chat-left-text me-1 text-muted"></i>Коментар
-                            <span class="text-muted fw-normal">(необов'язково)</span>
-                        </label>
-                        {{ form.notes }}
-                        {% if form.notes.errors %}
-                        <div class="text-danger small mt-1">{{ form.notes.errors|join:", " }}</div>
-                        {% endif %}
-                    </div>
 
                     
                     {% if form.non_field_errors %}
@@ -80,7 +75,7 @@
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary px-4 fw-semibold">
-                            <i class="bi bi-calendar-plus me-2"></i>Підтвердити бронювання
+                            Підтвердити бронювання
                         </button>
                         <a href="{% url 'room_list' %}" class="btn btn-outline-secondary">Скасувати</a>
                     </div>
@@ -92,7 +87,7 @@
         <div class="card border-0 bg-light rounded-4 mt-3">
             <div class="card-body py-3 px-4 small text-muted">
                 <i class="bi bi-info-circle me-1"></i>
-                Після відправки бронювання отримає статус <strong>«Очікує підтвердження»</strong>.
+                Бронювання отримає статус "Очікує підтвердження".
                 Адміністратор підтвердить або відхилить запит.
             </div>
         </div>

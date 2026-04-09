@@ -10,7 +10,7 @@ class RoomFeaturesInline(admin.StackedInline):
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
-    list_display = ['name', 'room_type', 'capacity', 'room_area',
+    list_display = ['name', 'room_type', 'address', 'capacity', 'room_area',
                     'price_per_hour', 'price_per_day', 'is_active']
     list_filter = ['room_type', 'is_active']
     search_fields = ['name', 'description']
@@ -18,7 +18,7 @@ class RoomAdmin(admin.ModelAdmin):
     inlines = [RoomFeaturesInline]
     fieldsets = (
         ('Основна інформація', {
-            'fields': ('name', 'room_type', 'description', 'is_active')
+            'fields': ('name', 'room_type', 'address', 'description', 'is_active')
         }),
         ('Параметри', {
             'fields': ('capacity', 'room_area', 'price_per_hour', 'price_per_day')
